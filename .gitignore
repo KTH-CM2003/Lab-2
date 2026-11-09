@@ -5,3 +5,4 @@ cm2003/datasets/*.part
 __pycache__/
 .ipynb_checkpoints/
 .venv/
+*.pt

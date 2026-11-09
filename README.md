@@ -112,7 +112,7 @@ In this assignment, you will practice writing backpropagation code and training 
 3. Implement Batch Normalization for training deep networks.
 4. Implement Dropout to regularize networks.
 5. Understand the architecture of Convolutional Neural Networks and get practice with training them.
-6. Gain experience with a major deep learning framework, PyTorch.
+6. Gain experience with a major deep learning framework, PyTorch, and with training and evaluating models on an imbalanced medical dataset.
 
 ## Assignment Structure
 
@@ -129,7 +129,7 @@ In `Dropout.ipynb`, you will implement dropout and explore its effects on model 
 The notebook `ConvolutionalNetworks.ipynb` will have you implement several new layers that are commonly used in convolutional networks.
 
 ### Q5: PyTorch on PneumoniaMNIST
-For this part, you will work with PyTorch, a popular and powerful deep learning framework. Open `PyTorch.ipynb` to learn how the framework works, culminating in training a convolutional network of your own design on PneumoniaMNIST to achieve the best performance you can.
+For this part, you will work with PyTorch, the most widely used deep learning framework. Open `PyTorch.ipynb` to learn how the framework works on three levels of abstraction. You will then learn how to train and evaluate a model properly (metrics for imbalanced medical data, loss curves, saving the best model, learning-rate schedules and mixed precision), and finally train a convolutional network of your own design on PneumoniaMNIST to achieve the best performance you can.
 
 ## Submitting Your Work
 

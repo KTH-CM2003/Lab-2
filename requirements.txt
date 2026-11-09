@@ -5,6 +5,7 @@ matplotlib==3.11.2
 pillow==13.0.0
 imageio==2.38.1
 ipykernel==7.4.0
+scikit-learn==1.9.1
 # PyTorch 2.14 is the newest release with a CUDA 12.6 build, which still supports older NVIDIA
 # drivers and GPUs (GTX 10xx and newer); PyTorch 2.15 needs CUDA 13.
 torch==2.14.1
