@@ -2,15 +2,12 @@
 
 ## Setting up the environment
 
-This lab uses NumPy, PyTorch and a few scientific Python packages. You need three things:
+This lab uses NumPy, PyTorch and a few scientific Python packages. You need two things:
 
 1. **A Python environment** with the packages in `requirements.txt` / `environment.yml`.
 2. **The datasets** in `cm2003/datasets/`: CIFAR-10 (about 170 MB) and PneumoniaMNIST (about 4 MB,
    for `PyTorch.ipynb`). They are not included in the repository; `python download_data.py` gets
    them for you (on MAIA, CIFAR-10 is copied from the course's shared folder).
-3. **A compiled Cython extension** for the fast convolution layers in
-   `ConvolutionalNetworks.ipynb`: `python build_cython.py` builds it. This needs a C compiler
-   (see [Troubleshooting](#troubleshooting)).
 
 Pick **one** of the options below.
 
@@ -24,11 +21,10 @@ nothing to install.
    git clone <your-repository-url>
    cd <your-repository-folder>
    ```
-2. Activate the environment, get the datasets and compile the Cython extension:
+2. Activate the environment and get the datasets:
    ```bash
    conda activate DL_labs_GPU
    python download_data.py
-   python build_cython.py
    ```
 3. Open a notebook (start with `FullyConnectedNets.ipynb`) and select the kernel **DL_labs_GPU**
    (*Kernel > Change Kernel...*). If it is not in the list, refresh the browser tab.
@@ -42,8 +38,7 @@ Working over SSH or in VS Code instead? Activate the environment in the terminal
    free conda-forge channel). Any existing Anaconda/Miniconda installation also works.
 2. In a terminal (on Windows: the *Miniforge Prompt*), go to the repository folder.
 3. **macOS / Linux:** run the setup script. It creates the conda environment `cm2003-lab2`,
-   registers it as a Jupyter kernel called *CM2003 Lab 2*, compiles the Cython extension and
-   downloads the datasets:
+   registers it as a Jupyter kernel called *CM2003 Lab 2* and downloads the datasets:
    ```bash
    ./setup.sh
    ```
@@ -53,7 +48,6 @@ Working over SSH or in VS Code instead? Activate the environment in the terminal
    conda activate cm2003-lab2
    python -m ipykernel install --user --name=cm2003-lab2 --display-name "CM2003 Lab 2"
    python download_data.py
-   python build_cython.py
    ```
 4. Start Jupyter (or VS Code), open a notebook and select the kernel **CM2003 Lab 2**.
 
@@ -79,7 +73,6 @@ uv venv --python 3.12                 # creates the environment in .venv/ (uv do
 uv pip install -r requirements.txt    # installs the lab packages into .venv/
 uv run python -m ipykernel install --user --name=cm2003-lab2 --display-name "CM2003 Lab 2"
 uv run python download_data.py
-uv run python build_cython.py
 ```
 
 `uv run <command>` runs a command inside the `.venv` environment without activating it. To
@@ -102,15 +95,6 @@ Run the setup cells at the top of `FullyConnectedNets.ipynb` (loads CIFAR-10) an
 
 ### Troubleshooting
 
-- **`build_cython.py` fails with a compiler error** (for example `error: command 'gcc' failed`,
-  `xcrun: error` or `Microsoft Visual C++ 14.0 or greater is required`): install a C compiler and
-  run it again. macOS: `xcode-select --install`. Windows: install
-  [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
-  ("Desktop development with C++"). Linux: `sudo apt install build-essential` (or your
-  distribution's equivalent). On MAIA a compiler is already installed.
-- **"You will need to compile a Cython extension" message:** you can ignore it, except in
-  `ConvolutionalNetworks.ipynb`. There, run the compile cell (or `python build_cython.py`), then
-  restart the kernel.
 - **The kernel does not show up in Jupyter:** refresh the browser tab. For your own environment,
   re-run the `ipykernel install` command from your option above.
 - **`FileNotFoundError` mentioning `cifar-10-batches-py`:** the dataset is missing. Run

@@ -1,15 +1,54 @@
 from __future__ import print_function
 import numpy as np
 
-try:
-    from .im2col_cython import col2im_cython, im2col_cython
-    from .im2col_cython import col2im_6d_cython
-except ImportError:
-    print("""=========== You can safely ignore the message below if you are NOT working on ConvolutionalNetworks.ipynb ===========""")
-    print("\tYou will need to compile a Cython extension for a portion of this assignment.")
-    print("\tThe instructions to do this will be given in a section of the notebook below.")
-
 from .im2col import *
+
+
+# Pure NumPy versions of the helpers that used to be compiled with Cython, so nothing needs to be
+# compiled. They loop only over the (small) filter window, which keeps them fast.
+
+
+def im2col_fast(x, field_height, field_width, padding, stride):
+    """Same output as im2col_indices: shape (C * HH * WW, out_h * out_w * N)."""
+    N, C, H, W = x.shape
+    p = padding
+    x_padded = np.pad(x, ((0, 0), (0, 0), (p, p), (p, p)), mode="constant")
+    out_h = (H + 2 * p - field_height) // stride + 1
+    out_w = (W + 2 * p - field_width) // stride + 1
+    cols = np.empty((C, field_height, field_width, out_h, out_w, N), dtype=x.dtype)
+    for i in range(field_height):
+        for j in range(field_width):
+            patch = x_padded[:, :, i:i + stride * out_h:stride, j:j + stride * out_w:stride]
+            cols[:, i, j] = patch.transpose(1, 2, 3, 0)
+    return cols.reshape(C * field_height * field_width, -1)
+
+
+def col2im_fast(cols, N, C, H, W, field_height, field_width, padding, stride):
+    """Inverse of im2col_fast: sums the columns back into an array of shape (N, C, H, W)."""
+    out_h = (H + 2 * padding - field_height) // stride + 1
+    out_w = (W + 2 * padding - field_width) // stride + 1
+    cols = cols.reshape(C, field_height, field_width, out_h, out_w, N)
+    x_padded = np.zeros((N, C, H + 2 * padding, W + 2 * padding), dtype=cols.dtype)
+    for i in range(field_height):
+        for j in range(field_width):
+            x_padded[:, :, i:i + stride * out_h:stride, j:j + stride * out_w:stride] += \
+                cols[:, i, j].transpose(3, 0, 1, 2)
+    if padding > 0:
+        return x_padded[:, :, padding:-padding, padding:-padding]
+    return x_padded
+
+
+def col2im_6d(cols, N, C, H, W, HH, WW, pad, stride):
+    """Sums columns of shape (C, HH, WW, N, out_h, out_w) back into an array of shape (N, C, H, W)."""
+    out_h, out_w = cols.shape[4], cols.shape[5]
+    x_padded = np.zeros((N, C, H + 2 * pad, W + 2 * pad), dtype=cols.dtype)
+    for i in range(HH):
+        for j in range(WW):
+            x_padded[:, :, i:i + stride * out_h:stride, j:j + stride * out_w:stride] += \
+                cols[:, i, j].transpose(1, 0, 2, 3)
+    if pad > 0:
+        return x_padded[:, :, pad:-pad, pad:-pad]
+    return x_padded
 
 
 def conv_forward_im2col(x, w, b, conv_param):
@@ -31,7 +70,7 @@ def conv_forward_im2col(x, w, b, conv_param):
     out = np.zeros((N, num_filters, out_height, out_width), dtype=x.dtype)
 
     # x_cols = im2col_indices(x, w.shape[2], w.shape[3], pad, stride)
-    x_cols = im2col_cython(x, w.shape[2], w.shape[3], pad, stride)
+    x_cols = im2col_fast(x, w.shape[2], w.shape[3], pad, stride)
     res = w.reshape((w.shape[0], -1)).dot(x_cols) + b.reshape(-1, 1)
 
     out = res.reshape(w.shape[0], out.shape[2], out.shape[3], x.shape[0])
@@ -99,7 +138,7 @@ def conv_backward_strides(dout, cache):
 
     dx_cols = w.reshape(F, -1).T.dot(dout_reshaped)
     dx_cols.shape = (C, HH, WW, N, out_h, out_w)
-    dx = col2im_6d_cython(dx_cols, N, C, H, W, HH, WW, pad, stride)
+    dx = col2im_6d(dx_cols, N, C, H, W, HH, WW, pad, stride)
 
     return dx, dw, db
 
@@ -120,7 +159,7 @@ def conv_backward_im2col(dout, cache):
 
     dx_cols = w.reshape(num_filters, -1).T.dot(dout_reshaped)
     # dx = col2im_indices(dx_cols, x.shape, filter_height, filter_width, pad, stride)
-    dx = col2im_cython(
+    dx = col2im_fast(
         dx_cols,
         x.shape[0],
         x.shape[1],
@@ -250,7 +289,7 @@ def max_pool_forward_im2col(x, pool_param):
     out_width = (W - pool_width) // stride + 1
 
     x_split = x.reshape(N * C, 1, H, W)
-    x_cols = im2col(x_split, pool_height, pool_width, padding=0, stride=stride)
+    x_cols = im2col_indices(x_split, pool_height, pool_width, padding=0, stride=stride)
     x_cols_argmax = np.argmax(x_cols, axis=0)
     x_cols_max = x_cols[x_cols_argmax, np.arange(x_cols.shape[1])]
     out = x_cols_max.reshape(out_height, out_width, N, C).transpose(2, 3, 0, 1)

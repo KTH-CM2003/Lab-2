@@ -2,8 +2,7 @@
 # Sets up everything needed for Lab 2:
 #   1. the conda environment "cm2003-lab2" (see environment.yml)
 #   2. a Jupyter kernel with the same name
-#   3. the compiled Cython extension for the fast convolution layers (build_cython.py)
-#   4. the datasets in cm2003/datasets/ (download_data.py)
+#   3. the datasets in cm2003/datasets/ (download_data.py)
 set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
 ENV_NAME=cm2003-lab2
@@ -27,7 +26,6 @@ conda activate "$ENV_NAME"
 python -m pip install $PIP_PACKAGES
 python -m ipykernel install --user --name="$ENV_NAME" --display-name "CM2003 Lab 2"
 
-python build_cython.py
 python download_data.py
 
 echo

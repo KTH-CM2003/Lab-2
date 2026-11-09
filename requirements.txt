@@ -4,8 +4,6 @@ scipy==1.14.0
 matplotlib==3.8.4
 pillow
 imageio==2.35.0
-cython
-setuptools
 future
 six
 ipykernel
