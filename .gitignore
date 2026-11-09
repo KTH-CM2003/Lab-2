@@ -1,0 +1,11 @@
+cm2003/datasets/cifar-10-batches-py/
+cm2003/datasets/*.tar.gz
+cm2003/datasets/*.npz
+cm2003/datasets/*.part
+cm2003/build/
+cm2003/im2col_cython.c
+cm2003/*.so
+cm2003/*.pyd
+__pycache__/
+.ipynb_checkpoints/
+.venv/
