@@ -1,4 +1,3 @@
-from __future__ import print_function
 import numpy as np
 
 from .im2col import *
@@ -105,13 +104,13 @@ def conv_forward_strides(x, w, b, conv_param):
     strides = x.itemsize * np.array(strides)
     x_stride = np.lib.stride_tricks.as_strided(x_padded, shape=shape, strides=strides)
     x_cols = np.ascontiguousarray(x_stride)
-    x_cols.shape = (C * HH * WW, N * out_h * out_w)
+    x_cols = x_cols.reshape(C * HH * WW, N * out_h * out_w)
 
     # Now all our convolutions are a big matrix multiply
     res = w.reshape(F, -1).dot(x_cols) + b.reshape(-1, 1)
 
     # Reshape the output
-    res.shape = (F, N, out_h, out_w)
+    res = res.reshape(F, N, out_h, out_w)
     out = res.transpose(1, 0, 2, 3)
 
     # Be nice and return a contiguous array
@@ -137,7 +136,7 @@ def conv_backward_strides(dout, cache):
     dw = dout_reshaped.dot(x_cols.T).reshape(w.shape)
 
     dx_cols = w.reshape(F, -1).T.dot(dout_reshaped)
-    dx_cols.shape = (C, HH, WW, N, out_h, out_w)
+    dx_cols = dx_cols.reshape(C, HH, WW, N, out_h, out_w)
     dx = col2im_6d(dx_cols, N, C, H, W, HH, WW, pad, stride)
 
     return dx, dw, db

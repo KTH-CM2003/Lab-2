@@ -1,12 +1,12 @@
-# Lab 2 Python packages (same versions as environment.yml), for uv or pip.
-numpy==1.26.4
-scipy==1.14.0
-matplotlib==3.8.4
-pillow
-imageio==2.35.0
-future
-six
-ipykernel
-torch==2.5.1
-torchvision==0.20.1
-medmnist==3.0.1
+# Lab 2 Python packages (Python 3.12 or newer), for uv, pip or conda (see environment.yml).
+numpy==2.5.4
+scipy==1.18.1
+matplotlib==3.11.2
+pillow==13.0.0
+imageio==2.38.1
+ipykernel==7.4.0
+# PyTorch 2.14 is the newest release with a CUDA 12.6 build, which still supports older NVIDIA
+# drivers and GPUs (GTX 10xx and newer); PyTorch 2.15 needs CUDA 13.
+torch==2.14.1
+torchvision==0.29.1
+medmnist==3.0.2

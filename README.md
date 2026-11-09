@@ -56,7 +56,7 @@ Next time, activate the environment with `conda activate cm2003-lab2`.
 > If `conda env create` stops with a *Terms of Service* error (newer Anaconda/Miniconda
 > installations), create the environment from conda-forge only and install the rest with pip:
 > ```bash
-> conda create -n cm2003-lab2 --override-channels -c conda-forge python=3.12 pip
+> conda create -n cm2003-lab2 --override-channels -c conda-forge python=3.13 pip
 > conda activate cm2003-lab2
 > pip install -r requirements.txt
 > ```
@@ -69,7 +69,7 @@ Next time, activate the environment with `conda activate cm2003-lab2`.
 repository folder:
 
 ```bash
-uv venv --python 3.12                 # creates the environment in .venv/ (uv downloads Python 3.12 if needed)
+uv venv --python 3.13                 # creates the environment in .venv/ (uv downloads Python 3.13 if needed)
 uv pip install -r requirements.txt    # installs the lab packages into .venv/
 uv run python -m ipykernel install --user --name=cm2003-lab2 --display-name "CM2003 Lab 2"
 uv run python download_data.py
@@ -85,7 +85,8 @@ In VS Code, you can also pick `.venv` directly as the Python interpreter.
 The NumPy notebooks (Q1 to Q4) run on the CPU. `PyTorch.ipynb` uses a GPU when one is available
 (it prints `using device: cuda`) and otherwise runs on the CPU, which is slower but works. On
 MAIA, `DL_labs_GPU` already has a PyTorch build that matches the GPUs. On your own computer,
-`pip`/`uv` install the default PyTorch build for your system; for an NVIDIA GPU on Windows, see
+`pip`/`uv` install the default PyTorch build for your system (Apple-silicon Macs can use
+`device = torch.device('mps')`); for an NVIDIA GPU on Windows, see
 [pytorch.org](https://pytorch.org/get-started/locally/) for the CUDA build.
 
 ### Check that it works

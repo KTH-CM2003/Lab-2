@@ -1,12 +1,7 @@
-from __future__ import print_function
-from future import standard_library
-
-standard_library.install_aliases()
-from builtins import range
 import urllib.request, urllib.error, urllib.parse, os, tempfile
 
 import numpy as np
-from imageio import imread
+from imageio.v2 import imread
 from PIL import Image
 
 """

@@ -9,21 +9,16 @@ ENV_NAME=cm2003-lab2
 
 source "$(conda info --base)/etc/profile.d/conda.sh"
 
-# Packages listed in environment.yml. The conda ones are installed with conda-forge only
-# (--override-channels), so Anaconda's "defaults" channel and its Terms of Service prompt are not
-# used; the ones under "pip:" (PyTorch, MedMNIST) are installed with pip.
-CONDA_PACKAGES=$(sed -n '/^dependencies:/,$p' environment.yml | grep -E '^  - ' | grep -v 'pip:' | sed -E 's/^  - //')
-PIP_PACKAGES=$(sed -n '/^ *- pip:/,$p' environment.yml | grep -E '^      - ' | sed -E 's/^ +- //')
-
+# Python comes from conda-forge only (--override-channels), so Anaconda's "defaults" channel and
+# its Terms of Service prompt are not used; the lab packages come from requirements.txt via pip.
 if conda env list | grep -qE "^${ENV_NAME} |/${ENV_NAME}$"; then
-  echo "Environment ${ENV_NAME} already exists, making sure all packages are installed"
-  conda install -y -n "$ENV_NAME" --override-channels -c conda-forge $CONDA_PACKAGES
+  echo "Environment ${ENV_NAME} already exists, updating its packages"
 else
-  conda create -y -n "$ENV_NAME" --override-channels -c conda-forge $CONDA_PACKAGES
+  conda create -y -n "$ENV_NAME" --override-channels -c conda-forge python=3.13 pip
 fi
 
 conda activate "$ENV_NAME"
-python -m pip install $PIP_PACKAGES
+python -m pip install -r requirements.txt
 python -m ipykernel install --user --name="$ENV_NAME" --display-name "CM2003 Lab 2"
 
 python download_data.py

@@ -3,17 +3,7 @@ channels:
   - conda-forge
   - nodefaults
 dependencies:
-  - python=3.12
-  - numpy=1.26.4
-  - scipy=1.14.0
-  - matplotlib=3.8.4
-  - pillow
-  - imageio=2.35.0
-  - future
-  - six
-  - ipykernel
+  - python=3.13
   - pip
   - pip:
-      - torch==2.5.1
-      - torchvision==0.20.1
-      - medmnist==3.0.1
+      - -r requirements.txt

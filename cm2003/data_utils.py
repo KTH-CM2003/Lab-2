@@ -1,10 +1,8 @@
-from __future__ import print_function
 
-from builtins import range
-from six.moves import cPickle as pickle
+import pickle
 import numpy as np
 import os
-from imageio import imread
+from imageio.v2 import imread
 import platform
 
 
@@ -148,7 +146,7 @@ def load_tiny_imagenet(path, dtype=np.float32, subtract_mean=True):
             img = imread(img_file)
             if img.ndim == 2:
                 ## grayscale file
-                img.shape = (64, 64, 1)
+                img = img.reshape(64, 64, 1)
             X_train_block[j] = img.transpose(2, 0, 1)
         X_train.append(X_train_block)
         y_train.append(y_train_block)
@@ -172,7 +170,7 @@ def load_tiny_imagenet(path, dtype=np.float32, subtract_mean=True):
             img_file = os.path.join(path, "val", "images", img_file)
             img = imread(img_file)
             if img.ndim == 2:
-                img.shape = (64, 64, 1)
+                img = img.reshape(64, 64, 1)
             X_val[i] = img.transpose(2, 0, 1)
 
     # Next load test images
@@ -184,7 +182,7 @@ def load_tiny_imagenet(path, dtype=np.float32, subtract_mean=True):
         img_file = os.path.join(path, "test", "images", img_file)
         img = imread(img_file)
         if img.ndim == 2:
-            img.shape = (64, 64, 1)
+            img = img.reshape(64, 64, 1)
         X_test[i] = img.transpose(2, 0, 1)
 
     y_test = None
